@@ -43,20 +43,23 @@
       admin: ""
     };
 
-    // Load passwords from your Google Sheet (Published TSV)
+    // Google Sheet থেকে B1 ও B2 সেল থেকে পাসওয়ার্ড লোড করবে
     async function loadPasswords() {
       const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRVbAguMhBLpeaqZr7HcJwb6OJopEnliYNskncCTebwk2w74sy0xobqoqr2XAyXQMrBjOd6o-p62Ya/pub?output=tsv";
       try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Failed to fetch passwords");
+        if (!res.ok) throw new Error("পাসওয়ার্ড লোড করতে সমস্যা হয়েছে");
         const text = await res.text();
         const rows = text.trim().split("\n");
-        // Assuming first row is header, second row has B1 and B2 in first two columns
-        const values = rows[1].split("\t");
-        sheetPassword.member = values[0].trim(); // B1 এর পাসওয়ার্ড
-        sheetPassword.admin = values[1].trim();  // B2 এর পাসওয়ার্ড
+        // প্রথম সারির ২য় কলাম = B1 (member password)
+        const b1 = rows[0].split("\t")[1].trim();
+        // দ্বিতীয় সারির ২য় কলাম = B2 (admin password)
+        const b2 = rows[1].split("\t")[1].trim();
+
+        sheetPassword.member = b1;
+        sheetPassword.admin = b2;
       } catch (error) {
-        alert("পাসওয়ার্ড লোড করতে সমস্যা: " + error.message);
+        alert(error.message);
       }
     }
 
