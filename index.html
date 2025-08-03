@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Google Access</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef;
+      text-align: center;
+      padding-top: 100px;
+    }
+    input, button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    iframe {
+      width: 90%;
+      height: 600px;
+      margin-top: 20px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>পাসওয়ার্ড দিয়ে লগইন করুন</h2>
+
+  <input type="password" id="memberPass" placeholder="Member Password দিন">
+  <button onclick="verifyPassword('member')">Member Login</button>
+
+  <br><br>
+
+  <input type="password" id="adminPass" placeholder="Admin Password দিন">
+  <button onclick="verifyPassword('admin')">Admin Login</button>
+
+  <div id="result"></div>
+
+  <script>
+    let sheetPassword = {
+      member: "",
+      admin: ""
+    };
+
+    // Load passwords from Google Sheet (Published TSV)
+    async function loadPasswords() {
+      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRWSCSzZEMNyiY8UAN6yWmUak3cUe-cBsmEp2XLqBZoEfpzKHULl1Mk9FZoUoO8HfwhGVh0gbHEOKVx/pub?output=tsv";
+      const res = await fetch(url);
+      const text = await res.text();
+      const rows = text.trim().split("\n");
+      const values = rows[1].split("\t");
+      sheetPassword.member = values[0].trim(); // B1
+      sheetPassword.admin = values[1].trim();  // B2
+    }
+
+    async function verifyPassword(type) {
+      if (!sheetPassword.member || !sheetPassword.admin) {
+        await loadPasswords();
+      }
+
+      const inputPass = document.getElementById(type + "Pass").value;
+      const correctPass = sheetPassword[type];
+
+      if (inputPass === correctPass) {
+        const iframe = document.createElement("iframe");
+        if (type === "member") {
+          iframe.src = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQq1TdYDujQkG0y92o_4eM-iEThXfexs_Hq7AmbHNIOgkzAuRhoVsoGb0Rl6fyxIYlJ6w3ofloSFwcD/pubhtml?widget=true&headers=false";
+        } else {
+          iframe.src = "https://docs.google.com/forms/d/e/1FAIpQLScH7wQubWSvBCkqI-ARL4069TUYAwAYHsCH6gJPP1XDGyuzgw/viewform?embedded=true";
+        }
+        document.getElementById("result").innerHTML = "";
+        document.getElementById("result").appendChild(iframe);
+      } else {
+        alert("ভুল পাসওয়ার্ড!");
+      }
+    }
+  </script>
+
+</body>
+</html>
