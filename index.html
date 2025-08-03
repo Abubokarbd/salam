@@ -6,9 +6,10 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #eef;
+      background: transparent;  /* এখানে ট্রান্সপারেন্ট ব্যাকগ্রাউন্ড */
       text-align: center;
       padding-top: 100px;
+      margin: 0;
     }
     input, button {
       margin: 5px;
@@ -20,6 +21,7 @@
       height: 600px;
       margin-top: 20px;
       border: none;
+      background: transparent;  /* iframe এর ব্যাকগ্রাউন্ড ট্রান্সপারেন্ট */
     }
   </style>
 </head>
@@ -43,7 +45,6 @@
       admin: ""
     };
 
-    // Google Sheet থেকে B1 ও B2 সেল থেকে পাসওয়ার্ড লোড করবে
     async function loadPasswords() {
       const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRVbAguMhBLpeaqZr7HcJwb6OJopEnliYNskncCTebwk2w74sy0xobqoqr2XAyXQMrBjOd6o-p62Ya/pub?output=tsv";
       try {
@@ -51,9 +52,7 @@
         if (!res.ok) throw new Error("পাসওয়ার্ড লোড করতে সমস্যা হয়েছে");
         const text = await res.text();
         const rows = text.trim().split("\n");
-        // প্রথম সারির ২য় কলাম = B1 (member password)
         const b1 = rows[0].split("\t")[1].trim();
-        // দ্বিতীয় সারির ২য় কলাম = B2 (admin password)
         const b2 = rows[1].split("\t")[1].trim();
 
         sheetPassword.member = b1;
