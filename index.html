@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Secure Google Access</title>
   <style>
     body {
@@ -27,12 +27,12 @@
 
   <h2>পাসওয়ার্ড দিয়ে লগইন করুন</h2>
 
-  <input type="password" id="memberPass" placeholder="Member Password দিন">
+  <input type="password" id="memberPass" placeholder="Member Password দিন" />
   <button onclick="verifyPassword('member')">Member Login</button>
 
-  <br><br>
+  <br /><br />
 
-  <input type="password" id="adminPass" placeholder="Admin Password দিন">
+  <input type="password" id="adminPass" placeholder="Admin Password দিন" />
   <button onclick="verifyPassword('admin')">Admin Login</button>
 
   <div id="result"></div>
@@ -43,15 +43,21 @@
       admin: ""
     };
 
-    // আপনার Google Sheet থেকে TSV লিংক — এখানে paste করা হয়েছে
+    // Load passwords from your Google Sheet (Published TSV)
     async function loadPasswords() {
-      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRWSCSzZEMNyiY8UAN6yWmUak3cUe-cBsmEp2XLqBZoEfpzKHULl1Mk9FZoUoO8HfwhGVh0gbHEOKVx/pub?output=tsv";
-      const res = await fetch(url);
-      const text = await res.text();
-      const rows = text.trim().split("\n");
-      const values = rows[1].split("\t");
-      sheetPassword.member = values[0].trim(); // B1
-      sheetPassword.admin = values[1].trim();  // B2
+      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRVbAguMhBLpeaqZr7HcJwb6OJopEnliYNskncCTebwk2w74sy0xobqoqr2XAyXQMrBjOd6o-p62Ya/pub?output=tsv";
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to fetch passwords");
+        const text = await res.text();
+        const rows = text.trim().split("\n");
+        // Assuming first row is header, second row has B1 and B2 in first two columns
+        const values = rows[1].split("\t");
+        sheetPassword.member = values[0].trim(); // B1 এর পাসওয়ার্ড
+        sheetPassword.admin = values[1].trim();  // B2 এর পাসওয়ার্ড
+      } catch (error) {
+        alert("পাসওয়ার্ড লোড করতে সমস্যা: " + error.message);
+      }
     }
 
     async function verifyPassword(type) {
