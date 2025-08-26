@@ -48,14 +48,7 @@
       padding-left: 100%;
       animation: scroll-left 20s linear infinite;
       font-size: 28px;
-    }
-
-    .scroll-text.yellow {
       color: #FFD700;
-    }
-    
-    .scroll-text.white {
-      color: #FFFFFF;
     }
 
     @keyframes scroll-left {
@@ -273,7 +266,7 @@
   </div>
 
   <div class="scroll-text-container">
-    <div class="scroll-text yellow" id="scrollingText"> 
+    <div class="scroll-text" id="scrollingText"> 
       আসসালামুয়ালাইকুম, আয়াত ১, আয়াত ২, এই দুইটা বাটন আপডেট করা হয়েছে, ডকুমেন্টে আরো কিছু ডকুমেন্ট যোগ করা হয়েছে। 
     </div>
   </div>
@@ -311,6 +304,9 @@
       <input type="password" id="passwordInput" class="password-input" placeholder="পাসওয়ার্ড">
       <button id="submitPassword" class="submit-btn">জমা দিন</button>
       <p id="errorMsg" class="error-message">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
+      <p id="loadingText"
+::contentReference[oaicite:0]{index=0}
+ 
       <p id="loadingText" class="loading">পাসওয়ার্ড চেক করা হচ্ছে...</p>
     </div>
   </div>
@@ -322,40 +318,106 @@
   </div>
 
   <script>
-    function updateTextColor() {
-      const scrollingText = document.getElementById('scrollingText');
-      const now = new Date();
-      const storedDate = localStorage.getItem('textColorChangeDate');
+    const loginBtn = document.getElementById('loginBtn');
+    const passwordModal = document.getElementById('passwordModal');
+    const closeModal = document.querySelector('.close');
+    const passwordInput = document.getElementById('passwordInput');
+    const submitPassword = document.getElementById('submitPassword');
+    const errorMsg = document.getElementById('errorMsg');
+    const loadingText = document.getElementById('loadingText');
+    const fullscreenModal = document.getElementById('fullscreenModal');
+    const fullscreenIframe = document.getElementById('fullscreenIframe');
+    const closeFullscreen = document.querySelector('.close-fullscreen');
 
-      if (!storedDate) {
-        localStorage.setItem('textColorChangeDate', now.toISOString());
-        scrollingText.classList.add('yellow');
-        scrollingText.classList.remove('white');
-        return;
-      }
+    // Google Sheets থেকে CSV পাসওয়ার্ড লোড
+    async function fetchPasswordsFromCSV() {
+      try {
+        loadingText.style.display = 'block';
+        submitPassword.disabled = true;
+        errorMsg.style.display = 'none';
 
-      const storedTime = new Date(storedDate);
-      const twoDaysLater = new Date(storedTime.getTime() + (2 * 24 * 60 * 60 * 1000));
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSRVbAguMhBLpeaqZr7HcJwb6OJopEnliYNskncCTebwk2w74sy0xobqoqr2XAyXQMrBjOd6o-p62Ya/pub?output=csv';
 
-      if (now >= twoDaysLater) {
-        scrollingText.classList.remove('yellow');
-        scrollingText.classList.add('white');
-      } else {
-        scrollingText.classList.add('yellow');
-        scrollingText.classList.remove('white');
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error('CSV লোড করতে সমস্যা হচ্ছে');
 
-        const timeUntilChange = twoDaysLater.getTime() - now.getTime();
-        setTimeout(() => {
-          scrollingText.classList.remove('yellow');
-          scrollingText.classList.add('white');
-        }, timeUntilChange);
+        const text = await response.text();
+        const rows = text.split('\n').map(row => row.split(','));
+        const row = rows[0]; // প্রথম রো ব্যবহার
+        const passwordA7 = row[0] ? row[0].trim() : '';
+        const passwordB7 = row[1] ? row[1].trim() : '';
+
+        loadingText.style.display = 'none';
+        submitPassword.disabled = false;
+        return { passwordA7, passwordB7 };
+
+      } catch (error) {
+        console.error('Error fetching passwords:', error);
+        loadingText.style.display = 'none';
+        submitPassword.disabled = false;
+
+        // Fallback ডিফল্ট পাসওয়ার্ড
+        return { passwordA7: 'RCO2025', passwordB7: 'DS2025' };
       }
     }
 
-    window.addEventListener('load', function() {
-      updateTextColor();
+    loginBtn.addEventListener('click', () => {
+      passwordModal.style.display = 'block';
+      passwordInput.focus();
     });
 
+    closeModal.addEventListener('click', () => {
+      passwordModal.style.display = 'none';
+      errorMsg.style.display = 'none';
+      passwordInput.value = '';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === passwordModal) {
+        passwordModal.style.display = 'none';
+        errorMsg.style.display = 'none';
+        passwordInput.value = '';
+      }
+    });
+
+    submitPassword.addEventListener('click', async () => {
+      const password = passwordInput.value.trim();
+      if (!password) {
+        errorMsg.textContent = 'দয়া করে পাসওয়ার্ড দিন';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      const { passwordA7, passwordB7 } = await fetchPasswordsFromCSV();
+
+      if (password === passwordA7) {
+        fullscreenIframe.src = "https://forms.gle/1X2pXQk2KCPJFWx67";
+        fullscreenModal.style.display = "block";
+        passwordModal.style.display = "none";
+        passwordInput.value = '';
+        errorMsg.style.display = 'none';
+      } else if (password === passwordB7) {
+        fullscreenIframe.src = "https://docs.google.com/spreadsheets/d/1m0bO6fY5IlggN8FA1b7zRloeVtkWRETPpqd5Wa_fhPc/edit?usp=sharing";
+        fullscreenModal.style.display = "block";
+        passwordModal.style.display = "none";
+        passwordInput.value = '';
+        errorMsg.style.display = 'none';
+      } else {
+        errorMsg.textContent = 'ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।';
+        errorMsg.style.display = 'block';
+      }
+    });
+
+    closeFullscreen.addEventListener('click', () => {
+      fullscreenModal.style.display = "none";
+      fullscreenIframe.src = "";
+    });
+
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') submitPassword.click();
+    });
+
+    // Offline check for buttons
     const buttons = document.querySelectorAll(".app-button");
     buttons.forEach(button => {
       button.addEventListener("click", function(event) {
@@ -369,124 +431,6 @@
         }
       });
     });
-
-    // Password Modal Functionality
-    const loginBtn = document.getElementById('loginBtn');
-    const passwordModal = document.getElementById('passwordModal');
-    const closeModal = document.querySelector('.close');
-    const passwordInput = document.getElementById('passwordInput');
-    const submitPassword = document.getElementById('submitPassword');
-    const errorMsg = document.getElementById('errorMsg');
-    const loadingText = document.getElementById('loadingText');
-    const fullscreenModal = document.getElementById('fullscreenModal');
-    const fullscreenIframe = document.getElementById('fullscreenIframe');
-    const closeFullscreen = document.querySelector('.close-fullscreen');
-
-    // Google Sheets থেকে পাসওয়ার্ড লোড করার ফাংশন
-    async function fetchPasswordsFromSheet() {
-      try {
-        loadingText.style.display = 'block';
-        submitPassword.disabled = true;
-        
-        // Google Sheets থেকে ডেটা লোড করছি
-        const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSRVbAguMhBLpeaqZr7HcJwb6OJopEnliYNskncCTebwk2w74sy0xobqoqr2XAyXQMrBjOd6o-p62Ya/pubhtml?widget=true&amp;headers=false');
-        const text = await response.text();
-        
-        // HTML পার্স করে A7 এবং B7 সেলের মান বের করা
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        const cells = doc.querySelectorAll('td');
-        
-        // A7 এবং B7 সেল খুঁজে বের করা
-        let passwordA7 = '';
-        let passwordB7 = '';
-        
-        // Google Sheets এর স্ট্রাকচার অনুযায়ী সেল পজিশন নির্ধারণ
-        // সাধারণত A7 সেলটি ৬ষ্ঠ row এবং প্রথম কলামে থাকে (0-based index)
-        if (cells.length >= 49) { // 7 rows * 7 columns = 49 cells
-          passwordA7 = cells[6].textContent.trim(); // A7 (first column, 7th row)
-          passwordB7 = cells[13].textContent.trim(); // B7 (second column, 7th row)
-        }
-        
-        loadingText.style.display = 'none';
-        submitPassword.disabled = false;
-        
-        return { passwordA7, passwordB7 };
-      } catch (error) {
-        console.error('Error fetching passwords:', error);
-        loadingText.style.display = 'none';
-        submitPassword.disabled = false;
-        
-        // Fallback হিসেবে কিছু ডিফল্ট পাসওয়ার্ড
-        return { 
-          passwordA7: "RCO25", 
-          passwordB7: "DS2025" 
-        };
-      }
-    }
-
-    loginBtn.addEventListener('click', function() {
-      passwordModal.style.display = 'block';
-    });
-
-    closeModal.addEventListener('click', function() {
-      passwordModal.style.display = 'none';
-      errorMsg.style.display = 'none';
-      passwordInput.value = '';
-    });
-
-    window.addEventListener('click', function(event) {
-      if (event.target === passwordModal) {
-        passwordModal.style.display = 'none';
-        errorMsg.style.display = 'none';
-        passwordInput.value = '';
-      }
-    });
-
-    submitPassword.addEventListener('click', async function() {
-      const password = passwordInput.value.trim();
-      
-      if (!password) {
-        errorMsg.textContent = 'দয়া করে পাসওয়ার্ড দিন';
-        errorMsg.style.display = 'block';
-        return;
-      }
-      
-      // Google Sheets থেকে পাসওয়ার্ড লোড করছি
-      const { passwordA7, passwordB7 } = await fetchPasswordsFromSheet();
-      
-      if (password === passwordA7) {
-        // Open form in fullscreen
-        fullscreenIframe.src = "https://forms.gle/1X2pXQk2KCPJFWx67";
-        fullscreenModal.style.display = "block";
-        passwordModal.style.display = "none";
-        passwordInput.value = '';
-        errorMsg.style.display = 'none';
-      } else if (password === passwordB7) {
-        // Open spreadsheet in fullscreen
-        fullscreenIframe.src = "https://docs.google.com/spreadsheets/d/1m0bO6fY5IlggN8FA1b7zRloeVtkWRETPpqd5Wa_fhPc/edit?usp=sharing";
-        fullscreenModal.style.display = "block";
-        passwordModal.style.display = "none";
-        passwordInput.value = '';
-        errorMsg.style.display = 'none';
-      } else {
-        errorMsg.textContent = 'ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।';
-        errorMsg.style.display = 'block';
-      }
-    });
-
-    closeFullscreen.addEventListener('click', function() {
-      fullscreenModal.style.display = "none";
-      fullscreenIframe.src = "";
-    });
-
-    // Allow pressing Enter to submit password
-    passwordInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        submitPassword.click();
-      }
-    });
   </script>
-
 </body>
 </html>
