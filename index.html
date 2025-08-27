@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>দারুস সালাম</title>
-
-  <!-- Kalpurush Bengali font -->
   <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet"/>
 
   <style>
@@ -52,15 +50,11 @@
     }
 
     @keyframes scroll-left {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
     }
 
-    a, a:visited, a:hover, a:active, button, .app-button {
+    a, button {
       font-family: inherit !important;
       text-decoration: none;
       color: inherit;
@@ -127,118 +121,6 @@
       animation: fadeIn 0.5s ease-in-out;
     }
 
-    /* Password Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      animation: fadeIn 0.3s;
-    }
-
-    .modal-content {
-      background-color: #033E3E;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #2196F3;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      position: relative;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
-    .close {
-      color: #fff;
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .close:hover {
-      color: #ff4d4d;
-    }
-
-    .password-input {
-      width: 100%;
-      padding: 12px;
-      margin: 15px 0;
-      border: 1px solid #2196F3;
-      border-radius: 5px;
-      background-color: #022727;
-      color: white;
-      font-size: 18px;
-    }
-
-    .submit-btn {
-      background-color: #2196F3;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 18px;
-      width: 100%;
-    }
-
-    .submit-btn:hover {
-      background-color: #0b7dda;
-    }
-
-    .error-message {
-      color: #ff4d4d;
-      margin-top: 10px;
-      display: none;
-    }
-
-    /* Fullscreen iframe modal */
-    .fullscreen-modal {
-      display: none;
-      position: fixed;
-      z-index: 10000;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-    }
-
-    .fullscreen-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .close-fullscreen {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      color: white;
-      background-color: #ff4d4d;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 40px;
-      font-size: 24px;
-      cursor: pointer;
-      z-index: 10001;
-    }
-
-    .loading {
-      display: none;
-      text-align: center;
-      margin-top: 10px;
-      color: #FFD700;
-    }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -252,10 +134,6 @@
       .header h1 {
         font-size: 40px;
       }
-      .modal-content {
-        margin: 20% auto;
-        width: 95%;
-      }
     }
   </style>
 </head>
@@ -266,13 +144,12 @@
   </div>
 
   <div class="scroll-text-container">
-    <div class="scroll-text" id="scrollingText"> 
-      আসসালামুয়ালাইকুম, আয়াত ১, আয়াত ২, এই দুইটা বাটন আপডেট করা হয়েছে, ডকুমেন্টে আরো কিছু ডকুমেন্ট যোগ করা হয়েছে। 
+    <div class="scroll-text" id="scrollingText">
+      আসসালামুয়ালাইকুম, আয়াত ১, আয়াত ২, এই দুইটা বাটন আপডেট করা হয়েছে, ডকুমেন্টে আরো কিছু ডকুমেন্ট যোগ করা হয়েছে।
     </div>
   </div>
 
   <div class="section-header">সংক্ষিপ্ত আয়াত তালিকা</div>
-
   <div class="button-grid">
     <a href="https://abubokarbd.github.io/rco/verse.html" class="app-button">আয়াত-১</a>
     <a href="https://abubokarbd.github.io/rco/verse1.html" class="app-button">আয়াত-২</a>
@@ -281,143 +158,20 @@
   </div>
 
   <div class="section-header">জরুরী দরকারী লিংক</div>
-
   <div class="button-grid">
     <a href="https://abubokarbd.github.io/rco/doc.html" class="app-button">ডকুমেন্ট</a>
     <a href="https://abubokarbd.github.io/rco/khutbah.html" class="app-button">খুতবাহ</a>
   </div>
 
   <div class="section-header">আবাসন প্রকল্প</div>
-
   <div class="button-grid">
-    <button id="loginBtn" class="app-button">লগিন</button>
+    <a href="https://abubokarbd.github.io/salam/data.html" class="app-button">লগিন</a>
     <a href="#" class="app-button">নীতিমালা</a>
   </div>
 
   <div id="offlineMessage">দয়া করে আপনার ইন্টারনেট কানেকশন চেক করুন।</div>
 
-  <!-- Password Modal -->
-  <div id="passwordModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>পাসওয়ার্ড দিন</h2>
-      <input type="password" id="passwordInput" class="password-input" placeholder="পাসওয়ার্ড">
-      <button id="submitPassword" class="submit-btn">জমা দিন</button>
-      <p id="errorMsg" class="error-message">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
-      <p id="loadingText"
-::contentReference[oaicite:0]{index=0}
- 
-      <p id="loadingText" class="loading">পাসওয়ার্ড চেক করা হচ্ছে...</p>
-    </div>
-  </div>
-
-  <!-- Fullscreen Iframe Modal -->
-  <div id="fullscreenModal" class="fullscreen-modal">
-    <span class="close-fullscreen">&times;</span>
-    <iframe id="fullscreenIframe" class="fullscreen-iframe"></iframe>
-  </div>
-
   <script>
-    const loginBtn = document.getElementById('loginBtn');
-    const passwordModal = document.getElementById('passwordModal');
-    const closeModal = document.querySelector('.close');
-    const passwordInput = document.getElementById('passwordInput');
-    const submitPassword = document.getElementById('submitPassword');
-    const errorMsg = document.getElementById('errorMsg');
-    const loadingText = document.getElementById('loadingText');
-    const fullscreenModal = document.getElementById('fullscreenModal');
-    const fullscreenIframe = document.getElementById('fullscreenIframe');
-    const closeFullscreen = document.querySelector('.close-fullscreen');
-
-    // Google Sheets থেকে CSV পাসওয়ার্ড লোড
-    async function fetchPasswordsFromCSV() {
-      try {
-        loadingText.style.display = 'block';
-        submitPassword.disabled = true;
-        errorMsg.style.display = 'none';
-
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSRVbAguMhBLpeaqZr7HcJwb6OJopEnliYNskncCTebwk2w74sy0xobqoqr2XAyXQMrBjOd6o-p62Ya/pub?output=csv';
-
-        const response = await fetch(CSV_URL);
-        if (!response.ok) throw new Error('CSV লোড করতে সমস্যা হচ্ছে');
-
-        const text = await response.text();
-        const rows = text.split('\n').map(row => row.split(','));
-        const row = rows[0]; // প্রথম রো ব্যবহার
-        const passwordA7 = row[0] ? row[0].trim() : '';
-        const passwordB7 = row[1] ? row[1].trim() : '';
-
-        loadingText.style.display = 'none';
-        submitPassword.disabled = false;
-        return { passwordA7, passwordB7 };
-
-      } catch (error) {
-        console.error('Error fetching passwords:', error);
-        loadingText.style.display = 'none';
-        submitPassword.disabled = false;
-
-        // Fallback ডিফল্ট পাসওয়ার্ড
-        return { passwordA7: 'RCO2025', passwordB7: 'DS2025' };
-      }
-    }
-
-    loginBtn.addEventListener('click', () => {
-      passwordModal.style.display = 'block';
-      passwordInput.focus();
-    });
-
-    closeModal.addEventListener('click', () => {
-      passwordModal.style.display = 'none';
-      errorMsg.style.display = 'none';
-      passwordInput.value = '';
-    });
-
-    window.addEventListener('click', (event) => {
-      if (event.target === passwordModal) {
-        passwordModal.style.display = 'none';
-        errorMsg.style.display = 'none';
-        passwordInput.value = '';
-      }
-    });
-
-    submitPassword.addEventListener('click', async () => {
-      const password = passwordInput.value.trim();
-      if (!password) {
-        errorMsg.textContent = 'দয়া করে পাসওয়ার্ড দিন';
-        errorMsg.style.display = 'block';
-        return;
-      }
-
-      const { passwordA7, passwordB7 } = await fetchPasswordsFromCSV();
-
-      if (password === passwordA7) {
-        fullscreenIframe.src = "https://forms.gle/1X2pXQk2KCPJFWx67";
-        fullscreenModal.style.display = "block";
-        passwordModal.style.display = "none";
-        passwordInput.value = '';
-        errorMsg.style.display = 'none';
-      } else if (password === passwordB7) {
-        fullscreenIframe.src = "https://docs.google.com/spreadsheets/d/1m0bO6fY5IlggN8FA1b7zRloeVtkWRETPpqd5Wa_fhPc/edit?usp=sharing";
-        fullscreenModal.style.display = "block";
-        passwordModal.style.display = "none";
-        passwordInput.value = '';
-        errorMsg.style.display = 'none';
-      } else {
-        errorMsg.textContent = 'ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।';
-        errorMsg.style.display = 'block';
-      }
-    });
-
-    closeFullscreen.addEventListener('click', () => {
-      fullscreenModal.style.display = "none";
-      fullscreenIframe.src = "";
-    });
-
-    passwordInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') submitPassword.click();
-    });
-
-    // Offline check for buttons
     const buttons = document.querySelectorAll(".app-button");
     buttons.forEach(button => {
       button.addEventListener("click", function(event) {
