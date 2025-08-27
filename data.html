@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>আরসিও ডকুমেন্টস</title>
+  <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'SolaimanLipi', sans-serif;
+      background: transparent;
+      padding: 15px;
+      max-width: 1000px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 15px 0;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      color: #333;
+    }
+
+    .sheet-container {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .sheet-container iframe {
+      width: 100%;
+      height: 80vh;
+      border: none;
+    }
+
+    /* সুন্দর পাসওয়ার্ড পপ-আপ */
+    .password-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0, 119, 204, 0.15), rgba(0,0,0,0.6));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .password-box {
+      background: #fff;
+      padding: 35px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    .password-box h2 {
+      margin-bottom: 20px;
+      color: #0077cc;
+      font-size: 1.5rem;
+    }
+
+    .password-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .password-box input:focus {
+      border-color: #0077cc;
+      box-shadow: 0 0 5px rgba(0, 119, 204, 0.4);
+    }
+
+    .password-box button {
+      background: linear-gradient(135deg, #0077cc, #005fa3);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .password-box button:hover {
+      background: linear-gradient(135deg, #005fa3, #004a82);
+      transform: translateY(-2px);
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      display: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .sheet-container iframe {
+        height: 70vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Password Protection -->
+  <div class="password-container" id="passwordContainer">
+    <div class="password-box">
+      <h2>পাসওয়ার্ড দিন</h2>
+      <input type="password" id="passwordInput" placeholder="পাসওয়ার্ড" />
+      <button id="passwordSubmit">প্রবেশ করুন</button>
+      <div class="error-message" id="errorMessage">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="content" style="display: none;">
+    <h1>আরসিও সম্পর্কিত ডকুমেন্টস</h1>
+    <div class="sheet-container">
+      <iframe src="https://docs.google.com/spreadsheets/d/1m0bO6fY5IlggN8FA1b7zRloeVtkWRETPpqd5Wa_fhPc/preview"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Password Protection System
+    const passwordContainer = document.getElementById('passwordContainer');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordSubmit = document.getElementById('passwordSubmit');
+    const errorMessage = document.getElementById('errorMessage');
+    const content = document.getElementById('content');
+
+    async function fetchPassword() {
+      try {
+        const sheetId = '1m1YJbWaoLgr0fo5-f9mWnB0ROnoru0mnt2yipq0obV0';
+        const response = await fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&range=A7`);
+        const text = await response.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        return json.table.rows[0].c[0].v;
+      } catch (error) {
+        console.error('Error fetching password:', error);
+        return 'defaultPassword';
+      }
+    }
+
+    let correctPassword = '';
+
+    async function initPasswordProtection() {
+      correctPassword = await fetchPassword();
+
+      passwordSubmit.addEventListener('click', checkPassword);
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkPassword();
+      });
+    }
+
+    function checkPassword() {
+      if (passwordInput.value === correctPassword) {
+        passwordContainer.style.display = 'none';
+        content.style.display = 'block';
+        sessionStorage.setItem('passwordVerified', 'true');
+      } else {
+        errorMessage.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    if (sessionStorage.getItem('passwordVerified') === 'true') {
+      passwordContainer.style.display = 'none';
+      content.style.display = 'block';
+    } else {
+      initPasswordProtection();
+    }
+  </script>
+</body>
+</html>
